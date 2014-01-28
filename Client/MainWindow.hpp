@@ -5,6 +5,7 @@
 #include <wx/wx.h>
 #include "GameManager.hpp"
 #include "ManageConnection.hpp"
+#include "../Util/Observer.hpp"
 
 namespace gui
 {
@@ -12,7 +13,7 @@ namespace gui
 
     /** Klasa głównego okna aplikacji.
      */
-    class MainWindow : public wxFrame
+    class MainWindow : public wxFrame, public util::Observer
     {
         public:
             /** Konstruktor.
@@ -20,6 +21,13 @@ namespace gui
              *  \param manageConnection wskaźnik do połączenia TCP z serwerem
              */
             MainWindow(shared_ptr<game::GameManager> gameManager, shared_ptr<game::ManageConnection> manageConnection);
+            /** Destruktor.
+             */
+            ~MainWindow();
+
+            /** Metoda aktualizująca stan okna. Wywoływana przez klasę manageConnection
+             */
+            void update();
 
         private:
             /** Potrzebne identyfikatory kontrolek.
@@ -30,6 +38,8 @@ namespace gui
              *  \param event obiekt zdarzenia
              */
             void onNewGameButton(wxCommandEvent &event);
+
+            wxButton *newGameButton;    /**< wskaźnik do przycisku Nowa gra*/
 
             shared_ptr<game::GameManager> gameManager_; /**< wskaźnik do menadżera gier*/
             shared_ptr<game::ManageConnection> manageConnection_;   /**<wskaźnik do połączenia TCP z serwerem*/

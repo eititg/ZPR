@@ -164,8 +164,6 @@ namespace game
         int type = util::unpack<boost::uint8_t>(buffer_, pointer);
         unsigned size = util::unpack<boost::uint16_t>(buffer_, pointer);
 
-        std::cout << "Typ: " << type << "\n";
-
         switch (type)
         {
             case net::PACKET_LOGIN_RES:
@@ -207,8 +205,6 @@ namespace game
                 unsigned short gameType = util::unpack<boost::uint8_t>(buffer_, pointer);
                 unsigned short players = util::unpack<boost::uint8_t>(buffer_, pointer);
                 std::string gameName = util::unpack(buffer_, size - sizeof(boost::uint8_t), pointer);
-
-std::cout << "\tgameType: " << gameType << ", players: " << players << ", game name: [" << gameName << "] (" << gameName.size() << ")\n";
 
                 gameManager_->addGame(players, gameName);
 

@@ -34,6 +34,8 @@ namespace gui
         disjoinButton = new wxButton(this, ID_DISJOIN_BUTTON, wxT("Opuść grę"));
         startButton = new wxButton(this, ID_START_BUTTON, wxT("Rozpocznij grę"));
 
+        joinButton->Disable();
+
         mainSizer->Add(gameDetailSizer, 1, wxEXPAND | wxALL, 5);
 
         gameDetailSizer->Add(nameSizer, 0, wxEXPAND | wxALL, 5);

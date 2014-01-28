@@ -20,6 +20,18 @@ namespace game
 
     void GameManager::addGame(unsigned short players, std::string name)
     {
+        std::vector<std::pair<unsigned short, std::string> >::iterator it;
+
+        for (it = games_.begin(); it != games_.end(); ++it)
+        {
+            if (it->second == name)
+            {
+                games_.erase(it);
+
+                break;
+            }
+        }
+
         games_.push_back(std::make_pair(players, name));
 
         std::sort(games_.begin(), games_.end(), boost::bind(&game::GameManager::sortCompare, this, _1, _2));

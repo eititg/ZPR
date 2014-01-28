@@ -12,6 +12,8 @@ namespace gui
         gameManager_(gameManager),
         manageConnection_(manageConnection)
     {
+        gameManager_->add(this);
+
         Connect(ID_NEWGAME_BUTTON, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(gui::MainWindow::onNewGameButton));
 
         wxPanel *mainPanel = new wxPanel(this);
@@ -35,12 +37,29 @@ namespace gui
         leftSizer->Add(gameListSizer, 1, wxEXPAND | wxALL, 5);
 
         gui::GameListCtrl *gameListCtrl = new gui::GameListCtrl(leftPanel, gameManager);
-        wxButton *newGameButton = new wxButton(leftPanel, ID_NEWGAME_BUTTON, wxT("Nowa gra"));
+        newGameButton = new wxButton(leftPanel, ID_NEWGAME_BUTTON, wxT("Nowa gra"));
 
         gameListSizer->Add(gameListCtrl, 9, wxEXPAND | wxALL, 5);
         gameListSizer->Add(newGameButton, 1, wxEXPAND | wxALL, 5);
 
         Center();
+    }
+
+    MainWindow::~MainWindow()
+    {
+        gameManager_->remove(this);
+    }
+
+    void MainWindow::update()
+    {
+        if (gameManager_->isJoined())
+        {
+            newGameButton->Disable();
+        }
+        else
+        {
+            newGameButton->Enable();
+        }
     }
 
     void MainWindow::onNewGameButton(wxCommandEvent&)
