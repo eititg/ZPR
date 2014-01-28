@@ -43,16 +43,16 @@ namespace net
         socket_->async_connect(endpoint, strand_->wrap(boost::bind(&SocketUDP::handleConnect, this, _1)));
     }
 
-    void SocketUDP::send(std::string message)
+    void SocketUDP::send(std::vector<boost::uint8_t> &buffer)
     {
-        std::list<std::string>::iterator it = sendBuffer_.insert(sendBuffer_.end(), message);
+        std::list<std::vector<boost::uint8_t> >::iterator it = sendBuffer_.insert(sendBuffer_.end(), buffer);
 
         strand_->post(boost::bind(&SocketUDP::dispatchSend, this, it));
     }
 
-    void SocketUDP::sendTo(const std::string &ip, unsigned short port, std::string message)
+    void SocketUDP::sendTo(const std::string &ip, unsigned short port, std::vector<boost::uint8_t> &buffer)
     {
-        std::list<std::string>::iterator it = sendBuffer_.insert(sendBuffer_.end(), message);
+        std::list<std::vector<boost::uint8_t> >::iterator it = sendBuffer_.insert(sendBuffer_.end(), buffer);
 
         strand_->post(boost::bind(&SocketUDP::dispatchSendTo, this, ip, port, it));
     }
@@ -93,12 +93,12 @@ namespace net
             startError(error);
     }
 
-    void SocketUDP::dispatchSend(std::list<std::string>::iterator it)
+    void SocketUDP::dispatchSend(std::list<std::vector<boost::uint8_t> >::iterator it)
     {
         socket_->async_send(boost::asio::buffer(*it), strand_->wrap(boost::bind(&SocketUDP::handleSend, this, it, _1)));
     }
 
-    void SocketUDP::handleSend(std::list<std::string>::iterator it, const error_code &error)
+    void SocketUDP::handleSend(std::list<std::vector<boost::uint8_t> >::iterator it, const error_code &error)
     {
         if (!error)
         {
@@ -110,14 +110,14 @@ namespace net
             startError(error);
     }
 
-    void SocketUDP::dispatchSendTo(const std::string &ip, unsigned short port, std::list<std::string>::iterator it)
+    void SocketUDP::dispatchSendTo(const std::string &ip, unsigned short port, std::list<std::vector<boost::uint8_t> >::iterator it)
     {
         ip::udp::endpoint endpoint(boost::asio::ip::address::from_string(ip), port);
 
         socket_->async_send_to(buffer(*it), endpoint, strand_->wrap(boost::bind(&SocketUDP::handleSendTo, this, ip, port, it, _1)));
     }
 
-    void SocketUDP::handleSendTo(const std::string &ip, unsigned short port, std::list<std::string>::iterator it, const error_code &error)
+    void SocketUDP::handleSendTo(const std::string &ip, unsigned short port, std::list<std::vector<boost::uint8_t> >::iterator it, const error_code &error)
     {
         if (!error)
         {
@@ -182,11 +182,11 @@ namespace net
     {
     }
 
-    void SocketUDP::onSend(const std::string&)
+    void SocketUDP::onSend(const std::vector<boost::uint8_t>&)
     {
     }
 
-    void SocketUDP::onSendTo(const std::string&, unsigned short, const std::string&)
+    void SocketUDP::onSendTo(const std::string&, unsigned short, const std::vector<boost::uint8_t>&)
     {
     }
 

@@ -35,9 +35,9 @@ namespace net
         socket_->async_connect(endpoint, strand_->wrap(bind(&SocketTCP::handleConnect, this, _1)));
     }
 
-    void SocketTCP::send(std::string message)
+    void SocketTCP::send(std::vector<boost::uint8_t> &buffer)
     {
-        std::list<std::string>::iterator it = sendBuffer_.insert(sendBuffer_.end(), message);
+        std::list<std::vector<boost::uint8_t> >::iterator it = sendBuffer_.insert(sendBuffer_.end(), buffer);
 
         strand_->post(bind(&SocketTCP::dispatchSend, this, it));
     }
@@ -73,12 +73,12 @@ namespace net
             startError(error);
     }
 
-    void SocketTCP::dispatchSend(std::list<std::string>::iterator it)
+    void SocketTCP::dispatchSend(std::list<std::vector<boost::uint8_t> >::iterator it)
     {
         socket_->async_send(boost::asio::buffer(*it), strand_->wrap(bind(&SocketTCP::handleSend, this, it, _1)));
     }
 
-    void SocketTCP::handleSend(std::list<std::string>::iterator it, const error_code &error)
+    void SocketTCP::handleSend(std::list<std::vector<boost::uint8_t> >::iterator it, const error_code &error)
     {
         if (!error)
         {
@@ -129,7 +129,7 @@ namespace net
     {
     }
 
-    void SocketTCP::onSend(const std::string&)
+    void SocketTCP::onSend(const std::vector<boost::uint8_t>&)
     {
     }
 
